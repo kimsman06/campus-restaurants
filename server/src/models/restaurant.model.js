@@ -5,23 +5,21 @@ class Restaurant {
     name,
     category,
     location,
-    priceRange,
-    rating,
     description,
-    recommendedMenu = [],
     likes = 0,
-    image = ''
+    image = '',
+    phone = '',
+    place_url = '',
   }) {
     this.id = Number(id);
     this.name = name;
     this.category = category;
     this.location = location;
-    this.priceRange = priceRange;
-    this.rating = Number(rating);
     this.description = description;
-    this.recommendedMenu = [...recommendedMenu];
     this.likes = Number(likes);
     this.image = image;
+    this.phone = phone;
+    this.place_url = place_url;
   }
 
   updateLikes(likes) {

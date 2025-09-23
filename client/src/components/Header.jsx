@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import styled from '@emotion/styled';
-import { FaHome, FaList, FaFire, FaPlus } from 'react-icons/fa';
+import { FaHome, FaList, FaFire, FaHeart } from 'react-icons/fa';
 
 const HeaderContainer = styled.header`
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -43,20 +43,20 @@ function Header() {
   return (
     <HeaderContainer>
       <h1 style={{ textAlign: 'center', marginBottom: '1rem' }}>
-        Ajou Campus Foodmap
+        캠퍼스 맛집
       </h1>
       <Nav>
         <NavLink to="/" className={isActive('/')}>
-          <FaHome /> Home
+          <FaHome /> 홈
         </NavLink>
-        <NavLink to="/list" className={isActive('/list')}>
-          <FaList /> List
+        <NavLink to="/" state={{ focusSearch: true }}>
+          <FaList /> 맛집 둘러보기
         </NavLink>
         <NavLink to="/popular" className={isActive('/popular')}>
-          <FaFire /> Popular Top 3
+          <FaFire /> 인기 맛집
         </NavLink>
-        <NavLink to="/submit" className={isActive('/submit')}>
-          <FaPlus /> Submit New restaurant
+        <NavLink to="/favorites" className={isActive('/favorites')}>
+          <FaHeart /> 좋아요
         </NavLink>
       </Nav>
     </HeaderContainer>

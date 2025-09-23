@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import styled from '@emotion/styled';
-import { FaStar, FaHeart, FaMapMarkerAlt, FaWonSign } from 'react-icons/fa';
-import { toast } from 'react-toastify';
+import { FaHeart, FaMapMarkerAlt, FaPhone } from 'react-icons/fa';
+import { useLikedRestaurants } from '../context/LikedRestaurantsContext';
 
 // Styled Components는 그대로 유지
 const Card = styled.div`
@@ -65,7 +65,6 @@ const ActionRow = styled.div`
   border-top: 1px solid #eee;
 `;
 
-// $liked로 변경 (transient prop)
 const LikeButton = styled.button`
   display: flex;
   align-items: center;
@@ -95,89 +94,13 @@ const DetailLink = styled(Link)`
 `;
 
 function RestaurantCard({ restaurant }) {
-  // State 초기화
-  const [liked, setLiked] = useState(false);
-  const [likes, setLikes] = useState(restaurant.likes || 0);
-
-  // 컴포넌트 마운트 시 LocalStorage에서 데이터 복원
-  useEffect(() => {
-    // 1. 좋아요 여부 복원
-    try {
-      const likedRestaurants = JSON.parse(
-        localStorage.getItem('likedRestaurants') || '[]'
-      );
-      if (likedRestaurants.includes(restaurant.id)) {
-        setLiked(true);
-      }
-
-      // 2. 좋아요 수 복원
-      const savedLikes = JSON.parse(
-        localStorage.getItem('restaurantLikes') || '{}'
-      );
-      if (savedLikes[restaurant.id] !== undefined) {
-        setLikes(savedLikes[restaurant.id]);
-      }
-    } catch (error) {
-      console.error('LocalStorage 읽기 오류:', error);
-    }
-  }, [restaurant.id, restaurant.likes]);
+  const { isLiked, toggleLike } = useLikedRestaurants();
+  const liked = isLiked(restaurant.id);
 
   const handleLike = (e) => {
-    // 이벤트 전파 방지 (중요!)
     e.preventDefault();
     e.stopPropagation();
-
-    try {
-      // 새로운 상태 계산
-      const newLikedState = !liked;
-      const newLikesCount = newLikedState 
-        ? likes + 1 
-        : Math.max(0, likes - 1); // 음수 방지
-
-      // State 업데이트
-      setLiked(newLikedState);
-      setLikes(newLikesCount);
-
-      // LocalStorage 업데이트 - 좋아요 여부
-      const likedRestaurants = JSON.parse(
-        localStorage.getItem('likedRestaurants') || '[]'
-      );
-      
-      if (newLikedState) {
-        // 좋아요 추가
-        if (!likedRestaurants.includes(restaurant.id)) {
-          likedRestaurants.push(restaurant.id);
-        }
-        toast.success(`${restaurant.name}을(를) 좋아요했습니다! ❤️`);
-      } else {
-        // 좋아요 취소
-        const index = likedRestaurants.indexOf(restaurant.id);
-        if (index > -1) {
-          likedRestaurants.splice(index, 1);
-        }
-        toast.info('좋아요를 취소했습니다.');
-      }
-      
-      localStorage.setItem('likedRestaurants', JSON.stringify(likedRestaurants));
-
-      // LocalStorage 업데이트 - 좋아요 수
-      const restaurantLikes = JSON.parse(
-        localStorage.getItem('restaurantLikes') || '{}'
-      );
-      restaurantLikes[restaurant.id] = newLikesCount;
-      localStorage.setItem('restaurantLikes', JSON.stringify(restaurantLikes));
-
-      // 디버깅용 로그
-      console.log('좋아요 업데이트:', {
-        restaurantId: restaurant.id,
-        liked: newLikedState,
-        likes: newLikesCount
-      });
-
-    } catch (error) {
-      console.error('좋아요 처리 오류:', error);
-      toast.error('좋아요 처리 중 오류가 발생했습니다.');
-    }
+    toggleLike(restaurant);
   };
 
   return (
@@ -191,30 +114,21 @@ function RestaurantCard({ restaurant }) {
           <CardTitle>{restaurant.name}</CardTitle>
           <CategoryBadge>{restaurant.category}</CategoryBadge>
         </CardHeader>
-        
         <InfoRow>
           <FaMapMarkerAlt /> {restaurant.location}
         </InfoRow>
         <InfoRow>
-          <FaWonSign /> {restaurant.priceRange}
+          <FaPhone /> {restaurant.phone}
         </InfoRow>
-        <InfoRow>
-          <FaStar color="gold" /> {restaurant.rating}/5.0
-        </InfoRow>
-        
-        <p style={{ margin: '1rem 0', color: '#666' }}>
-          {restaurant.description}
-        </p>
-        
         <ActionRow>
           <LikeButton 
-            $liked={liked}  // $ prefix 추가
+            $liked={liked}
             onClick={handleLike}
-            type="button"  // 명시적 type 지정
+            type="button"
           >
-            <FaHeart /> {likes}
+            <FaHeart /> {liked ? '좋아요!' : '좋아요'}
           </LikeButton>
-          <DetailLink to={`/restaurant/${restaurant.id}`}>
+          <DetailLink to={restaurant.place_url} target="_blank" rel="noopener noreferrer">
             자세히 보기 →
           </DetailLink>
         </ActionRow>

@@ -11,6 +11,7 @@ import ListPage from './pages/ListPage';
 import DetailPage from './pages/DetailPage';
 import PopularPage from './pages/PopularPage';
 import SubmitPage from './pages/SubmitPage';
+import FavoritesPage from './pages/FavoritesPage'; // 좋아요 페이지 import
 
 // Components
 import Header from './components/Header';
@@ -18,6 +19,8 @@ import NotFound from './components/NotFound';
 
 // Styles
 import GlobalStyles from './styles/GlobalStyles';
+
+import { LikedRestaurantsProvider } from './context/LikedRestaurantsContext';
 
 // React Query Client 생성
 const queryClient = new QueryClient({
@@ -32,37 +35,40 @@ const queryClient = new QueryClient({
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
-        <GlobalStyles />
-        <div className="app">
-          <Header />
-          <main className="main-content">
-            <Routes>
-              <Route path="/" element={<HomePage />} />
-              <Route path="/list" element={<ListPage />} />
-              <Route path="/restaurant/:id" element={<DetailPage />} />
-              <Route path="/popular" element={<PopularPage />} />
-              <Route path="/submit" element={<SubmitPage />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </main>
-          <footer className="footer">
-            <p>© 2025 Ajou Campus Foodmap | Made with React</p>
-          </footer>
-        </div>
-        <ToastContainer 
-          position="bottom-right"
-          autoClose={3000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-          theme="light"
-        />
-      </BrowserRouter>
+      <LikedRestaurantsProvider>
+        <BrowserRouter>
+          <GlobalStyles />
+          <div className="app">
+            <Header />
+            <main className="main-content">
+              <Routes>
+                <Route path="/" element={<HomePage />} />
+                <Route path="/list" element={<ListPage />} />
+                <Route path="/restaurant/:id" element={<DetailPage />} />
+                <Route path="/popular" element={<PopularPage />} />
+                <Route path="/favorites" element={<FavoritesPage />} /> {/* 좋아요 페이지 라우트 추가 */}
+                <Route path="/submit" element={<SubmitPage />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </main>
+            <footer className="footer">
+              <p>© 2025 Ajou Campus Foodmap | Made with React</p>
+            </footer>
+          </div>
+          <ToastContainer 
+            position="bottom-right"
+            autoClose={3000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="light"
+          />
+        </BrowserRouter>
+      </LikedRestaurantsProvider>
     </QueryClientProvider>
   );
 }

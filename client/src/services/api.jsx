@@ -53,7 +53,7 @@ const fallbackRestaurants = [
   }
 ];
 
-const DEFAULT_BASE_URL = 'https://pwd-week4-kimsman.onrender.com/';
+const DEFAULT_BASE_URL = 'http://localhost:3000';
 const rawBaseUrl = import.meta.env?.VITE_API_BASE_URL || DEFAULT_BASE_URL;
 const API_BASE_URL = rawBaseUrl.endsWith('/') ? rawBaseUrl.slice(0, -1) : rawBaseUrl;
 
@@ -79,13 +79,18 @@ api.interceptors.response.use(
 );
 
 export const restaurantAPI = {
-  getRestaurants: async () => {
+  getRestaurants: async (school, page = 1) => {
     try {
-      const response = await api.get('/api/restaurants');
+      const params = new URLSearchParams();
+      if (school) params.append('school', school);
+      if (page) params.append('page', page);
+      
+      const response = await api.get(`/api/restaurants?${params.toString()}`);
       return response.data;
     } catch (error) {
       console.warn('Using local fallback restaurant list', error);
-      return { data: fallbackRestaurants };
+      // Fallback data needs a compatible structure for infinite query
+      return { data: fallbackRestaurants, nextPage: null, isEnd: true };
     }
   },
 
