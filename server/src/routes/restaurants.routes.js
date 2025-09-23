@@ -5,8 +5,5 @@ const restaurantsController = require('../controllers/restaurants.controller');
 const router = express.Router();
 
 router.get('/', restaurantsController.getRestaurants);
-router.get('/sync-demo', restaurantsController.getRestaurantsSync);
-router.get('/popular', restaurantsController.getPopularRestaurants);
-router.get('/:id', restaurantsController.getRestaurant);
 
 module.exports = router;

@@ -52,9 +52,6 @@ function Header() {
         <NavLink to="/" state={{ focusSearch: true }}>
           <FaList /> 맛집 둘러보기
         </NavLink>
-        <NavLink to="/popular" className={isActive('/popular')}>
-          <FaFire /> 인기 맛집
-        </NavLink>
         <NavLink to="/favorites" className={isActive('/favorites')}>
           <FaHeart /> 좋아요
         </NavLink>

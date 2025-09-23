@@ -1,34 +1,11 @@
 // src/services/restaurants.service.js
 require('dotenv').config();
-const path = require('path');
-const { readFile } = require('fs/promises');
-const { readFileSync } = require('fs');
 const axios = require('axios');
 const ogs = require('open-graph-scraper');
 const Restaurant = require('../models/restaurant.model');
 
-const DATA_PATH = path.join(__dirname, '..', 'data', 'restaurants.json');
 const DEFAULT_IMAGE = 'https://via.placeholder.com/300'; // 유효한 플레이스홀더 이미지
-let restaurantCache = loadRestaurantsSync();
 
-function loadRestaurantsSync() {
-  const raw = readFileSync(DATA_PATH, 'utf8');
-  const parsed = JSON.parse(raw);
-  return parsed.map((item) => new Restaurant(item));
-}
-
-async function loadRestaurantsAsync() {
-  const raw = await readFile(DATA_PATH, 'utf8');
-  const parsed = JSON.parse(raw);
-  return parsed.map((item) => new Restaurant(item));
-}
-
-async function ensureCache() {
-  if (!restaurantCache || restaurantCache.length === 0) {
-    restaurantCache = await loadRestaurantsAsync();
-  }
-  return restaurantCache;
-}
 
 function cloneCollection(collection) {
   return collection.map((restaurant) => new Restaurant(restaurant));
@@ -102,31 +79,7 @@ async function getAllRestaurants(schoolQuery, page = 1) {
   return { data, nextPage: null, isEnd: true };
 }
 
-function getAllRestaurantsSync() {
-  if (!restaurantCache || restaurantCache.length === 0) {
-    restaurantCache = loadRestaurantsSync();
-  }
-  return cloneCollection(restaurantCache);
-}
-
-async function getRestaurantById(id) {
-  await ensureCache();
-  const numericId = Number(id);
-  return restaurantCache.find((restaurant) => restaurant.id === numericId) || null;
-}
-
-async function getPopularRestaurants(limit = 5) {
-  const restaurants = await getAllRestaurants();
-  return restaurants.data
-    .sort((a, b) => b.rating - a.rating)
-    .slice(0, limit);
-}
 
 module.exports = {
   getAllRestaurants,
-  getAllRestaurantsSync,
-  getRestaurantById,
-  getPopularRestaurants,
-  loadRestaurantsSync,
-  loadRestaurantsAsync,
 };
