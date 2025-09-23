@@ -82,7 +82,7 @@ export const restaurantAPI = {
       const params = new URLSearchParams();
       if (school) params.append('school', school);
       if (page) params.append('page', page);
-      
+
       const response = await api.get(`/api/restaurants?${params.toString()}`);
       return response.data;
     } catch (error) {
