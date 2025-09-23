@@ -1,0 +1,14 @@
+{
+  "name": "campus-restaurants-monorepo",
+  "private": true,
+  "workspaces": [
+    "client",
+    "server"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace=client & npm run dev --workspace=server",
+    "install:client": "npm install --workspace=client",
+    "install:server": "npm install --workspace=server",
+    "test": "npm test --workspace=server"
+  }
+}
