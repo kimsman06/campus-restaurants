@@ -83,7 +83,7 @@ export const restaurantAPI = {
       if (school) params.append('school', school);
       if (page) params.append('page', page);
 
-      const response = await api.get(`/api/restaurants?${params.toString()}`);
+      const response = await api.get(`https://campus-restaurants-server.vercel.app/api/restaurants?${params.toString()}`);
       return response.data;
     } catch (error) {
       console.warn('Using local fallback restaurant list', error);
@@ -94,7 +94,7 @@ export const restaurantAPI = {
 
   getRestaurantById: async (id) => {
     try {
-      const response = await api.get(`/api/restaurants/${id}`);
+      const response = await api.get(`https://campus-restaurants-server.vercel.app/api/restaurants/${id}`);
       return response.data;
     } catch (error) {
       console.warn(`Using local fallback for restaurant ${id}`, error);
@@ -107,7 +107,7 @@ export const restaurantAPI = {
 
   getPopularRestaurants: async () => {
     try {
-      const response = await api.get('/api/restaurants/popular');
+      const response = await api.get('https://campus-restaurants-server.vercel.app/api/restaurants/popular');
       return response.data;
     } catch (error) {
       console.warn('Using local fallback popular restaurants', error);
