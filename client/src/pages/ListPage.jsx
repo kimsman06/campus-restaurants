@@ -1,5 +1,5 @@
 /* src/pages/ListPage.jsx */
-import React, { useState, useEffect, Fragment } from 'react';
+import React, { useState, useEffect, Fragment, Suspense } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useInView } from 'react-intersection-observer';
@@ -102,8 +102,7 @@ function ListPage() {
           </FilterButton>
         ))}
       </FilterContainer>
-
-      {status === 'loading' ? (
+      {status === 'pending' ? (
         <LoaderWrapper>
           <ClipLoader color="#667eea" size={50} />
           <p>맛집 정보를 불러오는 중...</p>
