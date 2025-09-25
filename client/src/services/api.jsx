@@ -10,7 +10,6 @@ const api = axios.create({
 
 api.interceptors.request.use(
   (config) => {
-    console.log('API request:', config.method?.toUpperCase(), config.url);
     return config;
   },
   (error) => Promise.reject(error)
